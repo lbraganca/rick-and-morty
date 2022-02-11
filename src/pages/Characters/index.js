@@ -29,19 +29,14 @@ export default function Characters() {
     search: "",
   });
   const [totalPages, setTotalPages] = useState(1);
-  const { data, isLoading, error } = useFetch("get", "character", {
-    page: searchParams.get("page"),
-    name: searchParams.get("search"),
-  });
+  const { data, isLoading, error } = useFetch("get", "character", searchParams);
 
   useEffect(() => {
-    setTotalPages(data?.info.pages || 1);
+    data && setTotalPages(data.info.pages);
   }, [data]);
 
   return (
     <Container>
-      <p>{isLoading ? "true" : "false"}</p>
-
       <Masonry
         breakpointCols={breakpoints}
         className={styles.masonry}
@@ -65,9 +60,9 @@ export default function Characters() {
           showLastButton
         />
       )}
-      {/* <Backdrop className={styles.backdrop} open={isLoading}>
+      <Backdrop className={styles.backdrop} open={isLoading}>
         <CircularProgress color="primary" />
-      </Backdrop> */}
+      </Backdrop>
       <Snackbar open={error} autoHideDuration={5000} onClose={handleErrorClose}>
         {error && (
           <Alert onClose={handleErrorClose} severity="error">
