@@ -1,4 +1,4 @@
-# react-hook-form-demo
+# rick-and-morty
 
 Simple `react` APP based on the `create-react-app` stack that allows the user to search for Rick and Morty's characters. 
 
