@@ -14,7 +14,7 @@ const useFetch = (method = "get", resource, params) => {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const data = await axios[method](host, params);
+        const { data } = await axios[method](host, params);
         setData(data);
         setIsLoading(false);
       } catch (error) {

@@ -35,7 +35,7 @@ export default function Characters() {
   });
 
   useEffect(() => {
-    setTotalPages(data?.data.info.pages || 1);
+    setTotalPages(data?.info.pages || 1);
   }, [data]);
 
   return (
@@ -48,7 +48,7 @@ export default function Characters() {
         columnClassName={styles.masonryColumn}
       >
         {data &&
-          data.data.results.map((character) => (
+          data.results.map((character) => (
             <div className={styles.masonryItem} key={character.id}>
               <CharacterCard data={character} />
             </div>
