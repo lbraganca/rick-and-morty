@@ -11,7 +11,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import Masonry from "react-masonry-css";
 import CharacterCard from "../../components/CharacterCard";
 import useStyles from "./use-styles";
-import { getWhere } from "../../api";
+import useFetch from "../../hooks/useFetch";
 
 const breakpoints = {
   default: 2,
@@ -28,43 +28,31 @@ export default function Characters() {
     page: 1,
     search: "",
   });
-  const [characters, setCharacters] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorDetails, setErrorDetails] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
+  const { data, isLoading, error } = useFetch("get", "character", {
+    page: searchParams.get("page"),
+    name: searchParams.get("search"),
+  });
 
   useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      try {
-        const {
-          data: { results, info },
-        } = await getWhere("character", {
-          page: searchParams.get("page"),
-          name: searchParams.get("search"),
-        });
-        setTotalPages(info.pages);
-        setCharacters(results);
-      } catch (ignored) {
-        setErrorDetails("Error while fetching data, try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [searchParams]);
+    setTotalPages(data?.data.info.pages || 1);
+  }, [data]);
 
   return (
     <Container>
+      <p>{isLoading ? "true" : "false"}</p>
+
       <Masonry
         breakpointCols={breakpoints}
         className={styles.masonry}
         columnClassName={styles.masonryColumn}
       >
-        {characters.map((character) => (
-          <div className={styles.masonryItem} key={character.id}>
-            <CharacterCard data={character} />
-          </div>
-        ))}
+        {data &&
+          data.data.results.map((character) => (
+            <div className={styles.masonryItem} key={character.id}>
+              <CharacterCard data={character} />
+            </div>
+          ))}
       </Masonry>
       {totalPages > 1 && (
         <Pagination
@@ -77,17 +65,15 @@ export default function Characters() {
           showLastButton
         />
       )}
-      <Backdrop className={styles.backdrop} open={isLoading}>
+      {/* <Backdrop className={styles.backdrop} open={isLoading}>
         <CircularProgress color="primary" />
-      </Backdrop>
-      <Snackbar
-        open={errorDetails}
-        autoHideDuration={5000}
-        onClose={handleErrorClose}
-      >
-        <Alert onClose={handleErrorClose} severity="error">
-          {errorDetails}
-        </Alert>
+      </Backdrop> */}
+      <Snackbar open={error} autoHideDuration={5000} onClose={handleErrorClose}>
+        {error && (
+          <Alert onClose={handleErrorClose} severity="error">
+            Error while fetching data, try again.
+          </Alert>
+        )}
       </Snackbar>
     </Container>
   );
