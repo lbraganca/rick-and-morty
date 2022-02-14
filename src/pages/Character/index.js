@@ -27,7 +27,6 @@ export default function Characters() {
       setIsLoading(true);
       try {
         const { data } = await get("character", params.id);
-        debugger;
         setCharacter(data);
       } catch (ignored) {
         setErrorDetails("Error while fetching data, try again.");

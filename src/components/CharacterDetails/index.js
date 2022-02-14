@@ -15,7 +15,7 @@ export default function CharacterCard({ character }) {
     origin: { name: origin },
     location: { name: lastSeen },
   } = character;
-  debugger;
+
   return (
     <Card className={styles.root} elevation={1}>
       <CardMedia className={styles.media} image={image} />
